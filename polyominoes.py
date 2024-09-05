@@ -81,16 +81,19 @@ def get_name(n):
     return PREFIXES[n] + 'omino'
 
 
-def generate(n: int):
+def generate(n: int, keep: bool):
     nominoes = [Polyomino([(0, 0)])]
     for _ in range(n - 1):
         #print(_)
         newnominoes = []
         for p in nominoes:
             for x in p.extensions():
-                if x not in newnominoes:
+                if x not in newnominoes and x not in nominoes:
                     newnominoes.append(x)
-        nominoes = newnominoes
+        if not keep:
+            nominoes = newnominoes
+        else:
+            nominoes += newnominoes
     #print(nominoes, len(nominoes))
 
 
@@ -126,13 +129,15 @@ def generate(n: int):
     sv.to_csv(f'data/{get_name(n)}_data.csv', index=False)
 
 def make_image(n):
-    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 2), (1, 7), (3, 6),(6, 10)][n]
+    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 4), (1, 7), (3, 6),(6, 10)][n]
 
     bfig, axs = plt.subplots(rows, cols, figsize=(cols, rows), dpi=300)
     sv = pd.read_csv(f'data/{get_name(n)}_data.csv')
 
     for i, [name, b] in sv.iterrows():
-        i = int(i)
+        print(i, name)
+        i = int(i if name not in [0, 1, 2, 3, 4, 5, 6] else name)
+
         p = Polyomino(int(b), name)
         if rows == 1:
             ax = axs[i]
@@ -142,6 +147,6 @@ def make_image(n):
         p.draw(ax)
     bfig.savefig(f'images/{get_name(n)}es.png',bbox_inches='tight')
 
-N = 6
-generate(N)
+N = 3
+generate(N, True)
 make_image(N)
