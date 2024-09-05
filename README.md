@@ -25,5 +25,7 @@ Oh, also if you want all the polyominoes up to n = 6 in one unified system, I pr
 
 ![subominoes](images/triominoes.png)
 
+4 is a stretch, but the rest of them fit so well that I'm ok with it.
+
 Maybe replace underscore with exclamation point...
 maybe I'll do the septominoes next.. how many of those are there? 196 feels doable with two-syllable words.
