@@ -59,6 +59,10 @@ class Polyomino:
     def __repr__(self):
         return str(self.squares)
 
+    def get_color(self):
+        flp = Polyomino(flip(self.squares))
+        rots = flp.rots + self.rots
+        return cmap(pow(max(rots),min(rots),97))
     def draw(self, ax, n):
         sq = self.squares
         for i in range(self.draw_rot):
@@ -66,7 +70,7 @@ class Polyomino:
         xs, ys = zip(*sq)
         mx, my = max(xs) + 1, max(ys) + 1
         cx, cy = mx / 2, my / 2
-        color = cmap(self.rots[self.draw_rot]% 97)
+        color = self.get_color()
         for x, y in sq:
             ax.add_patch(patches.Rectangle((x - cx, y - cy), 1, 1, facecolor=color, edgecolor='black'))
         ax.set_axis_off()
@@ -82,7 +86,7 @@ def get_name(n):
     return PREFIXES[n] + 'omino'
 
 
-def generate(n: int, keep: bool):
+def generate(n: int, keep: bool, file=None):
     nominoes = [Polyomino([(0, 0)])]
     for _ in range(n - 1):
         #print(_)
@@ -97,10 +101,11 @@ def generate(n: int, keep: bool):
             nominoes += newnominoes
     #print(nominoes, len(nominoes))
 
-
+    if file is None:
+        file = get_name(n)
 
     try:
-        df = pd.read_csv(f'data/{get_name(n)}es.csv')
+        df = pd.read_csv(f'data/{file}es.csv')
         df.fillna(0, inplace=True)
     except FileNotFoundError:
         df = pd.DataFrame(columns=['name', 'rot', 'main'])
@@ -129,13 +134,15 @@ def generate(n: int, keep: bool):
         sv.loc[idx] = [nomino.name, nomino.rots[nomino.draw_rot]]
         idx += 1
     sv['bitrep'] = sv['bitrep'].astype(int)
-    sv.to_csv(f'data/{get_name(n)}_data.csv', index=False)
+    sv.to_csv(f'data/{file}_data.csv', index=False)
 
-def make_image(n):
-    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 4), (1, 7), (3, 6),(6, 10), (28, 7)][n]
+def make_image(n, file=None):
+    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 4), (1, 7), (3, 6), (6, 10), (28, 7)][n]
 
     bfig, axs = plt.subplots(rows, cols, figsize=(cols, rows), dpi=300)
-    sv = pd.read_csv(f'data/{get_name(n)}_data.csv')
+    if file is None:
+        file = get_name(n)
+    sv = pd.read_csv(f'data/{file}_data.csv')
 
     for i, [name, b] in sv.iterrows():
         #print(i, name)
@@ -148,8 +155,15 @@ def make_image(n):
             ax = axs[i // cols, i % cols]
         ax.set_aspect('equal')
         p.draw(ax, n)
-    bfig.savefig(f'images/{get_name(n)}es.png',bbox_inches='tight')
+    bfig.savefig(f'images/{file}es.png',bbox_inches='tight')
 
-N = 6
-generate(N, False)
-make_image(N)
+generate(3, True)
+make_image(3)
+generate(4, False, 'tetris')
+make_image(4, 'tetris')
+generate(4, False)
+make_image(4)
+generate(5, False)
+make_image(5)
+generate(6, False)
+make_image(6)

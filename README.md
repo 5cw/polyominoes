@@ -5,7 +5,7 @@ hexominoes, but I felt unsatisfied.
 
 I always liked the tetris pieces and their lettering.
 
-![tetrominoes](images/tetris.png)
+![tetrominoes](images/tetrises.png)
 
 And the tetris pieces are one-sided, i.e. they distinguish between reflections, but not rotations. 
 
