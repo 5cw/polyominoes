@@ -59,7 +59,7 @@ class Polyomino:
     def __repr__(self):
         return str(self.squares)
 
-    def draw(self, ax):
+    def draw(self, ax, n):
         sq = self.squares
         for i in range(self.draw_rot):
             sq = rot(sq)
@@ -70,11 +70,12 @@ class Polyomino:
         for x, y in sq:
             ax.add_patch(patches.Rectangle((x - cx, y - cy), 1, 1, facecolor=color, edgecolor='black'))
         ax.set_axis_off()
-        ax.set_xlim(-3.5, 3.5)
-        ax.set_ylim(-3.5, 3.5)
-        ax.set_title(f'{self.name}', y=-.2)
+        size = max(3.5, (n + 1)/2)
+        ax.set_xlim(-size, size)
+        ax.set_ylim(-size, size)
+        ax.set_title(f'{self.name}', y=-max(.2, n/20 - .1))
 
-PREFIXES = ['null', 'mon', 'd', 'tri', 'tetr', 'pent', 'hex']
+PREFIXES = ['null', 'mon', 'd', 'tri', 'tetr', 'pent', 'hex', 'sept', 'oct']
 
 
 def get_name(n):
@@ -98,18 +99,20 @@ def generate(n: int, keep: bool):
 
 
 
-    df = pd.read_csv(f'data/{get_name(n)}es.csv')
-    df.fillna(0, inplace=True)
-
+    try:
+        df = pd.read_csv(f'data/{get_name(n)}es.csv')
+        df.fillna(0, inplace=True)
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['name', 'rot', 'main'])
     sv = pd.DataFrame(columns=['name', 'bitrep'])
 
     used = set()
     for i, nomino in enumerate(nominoes):
         nomino.draw_rot = int(df['rot'].get(i, 0))
-        nomino.name = df['name'][i]
+        nomino.name = df['name'].get(i, "none")
     idx = 0
     for i, nomino in enumerate(nominoes):
-        if not df['main'][i]:
+        if not df['main'].get(i, 0):
             continue
 
         f = bitrep(flip(nomino.squares))
@@ -129,13 +132,13 @@ def generate(n: int, keep: bool):
     sv.to_csv(f'data/{get_name(n)}_data.csv', index=False)
 
 def make_image(n):
-    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 4), (1, 7), (3, 6),(6, 10)][n]
+    rows, cols = [(0, 0), (1, 1), (1, 1), (1, 4), (1, 7), (3, 6),(6, 10), (28, 7)][n]
 
     bfig, axs = plt.subplots(rows, cols, figsize=(cols, rows), dpi=300)
     sv = pd.read_csv(f'data/{get_name(n)}_data.csv')
 
     for i, [name, b] in sv.iterrows():
-        print(i, name)
+        #print(i, name)
         i = int(i if name not in [0, 1, 2, 3, 4, 5, 6] else name)
 
         p = Polyomino(int(b), name)
@@ -144,9 +147,9 @@ def make_image(n):
         else:
             ax = axs[i // cols, i % cols]
         ax.set_aspect('equal')
-        p.draw(ax)
+        p.draw(ax, n)
     bfig.savefig(f'images/{get_name(n)}es.png',bbox_inches='tight')
 
-N = 3
-generate(N, True)
+N = 6
+generate(N, False)
 make_image(N)

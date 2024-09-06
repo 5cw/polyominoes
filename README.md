@@ -17,7 +17,7 @@ But there are 35 free hexominoes, which can be given letters if you add some com
 
 ![hexominoes](images/hexominoes.png)
 
-The first 50 are all pairs, and I tried to name them such that the one 'facing' to the right (no hard and fast rule, just off vibes and what I'm picturing them as) has a name which is in some way before, more common, larger, or senior to the one facing to the left. For instance, the animals I tried to name with adult and child terms ('peep' for bird child isn't universal but is cute, and 'asp' is just another more obscure term for some kinds of snake) The naming process involved a lot of googling '______ synonyms' but I think it turned out ok!
+The first 50 are all pairs, and I tried to name them such that the one 'facing' to the right (no hard and fast rule, just off vibes and what I'm picturing them as) has a name which is in some way before, more common, larger, or senior to the one facing to the left. For instance, the animals I tried to name with adult and child terms ('chick' for bird child isn't universal but is cute, and 'asp' is just another more obscure term for some kinds of snake) The naming process involved a lot of googling '______ synonyms' but I think it turned out ok!
 
 Oh, also if you want all the polyominoes up to n = 6 in one unified system, I propose this:
 
